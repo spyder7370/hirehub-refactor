@@ -87,7 +87,6 @@
 							</li>
 							<% } %>
 						</ul>
-
 					</div>
 					<% if (currentUser && currentUser.isAdmin) { %>
 					<div class="save-apply-btn d-flex justify-content-end mb-50">
@@ -144,8 +143,7 @@
 	</div>
 </div>
 
-<% if (job.students) { %>
-<% for( let student of job.students ) { %>
+<% if (currentUser && currentUser.isAdmin) { %>
 <div class="company-job-detaiils-page mb-120">
 	<div class="container">
 		<div class="row">
@@ -162,6 +160,8 @@
 										</tr>
 									</thead>
 									<tbody>
+										<% if (job.students) { %>
+										<% for( let student of job.students ) { %>
 										<tr>
 											<td data-label="Candidate Name">
 												<div class="employee-info">
@@ -185,15 +185,44 @@
 											<td data-label="Actions">
 												<div class="action-btn-group d-flex justify-content-start">
 													<ul>
-														<li><button><img src="/assets/images/icon/shortlist-icon.svg"
-																	alt=""> Shortlist</button></li>
-														<li><button class="reject"><img
-																	src="/assets/images/icon/rejected-icon.svg" alt="">
-																Reject</button></li>
+														<% if (!student.shortlisted) { %>
+														<li>
+															<button>
+																<img src="/assets/images/icon/shortlist-icon.svg"
+																	alt="">
+																<a href="">Shortlist</a>
+															</button>
+														</li>
+														<% } else { %>
+														<li>
+															<button disabled>
+																<img src="/assets/images/icon/shortlist-icon.svg"
+																	alt="">
+																Shortlisted
+															</button>
+														</li>
+														<% } %>
+														<% if (!student.rejected) { %>
+														<li>
+															<button class="reject">
+																<img src="/assets/images/icon/rejected-icon.svg" alt="">
+																<a href="">Reject</a>
+															</button>
+														</li>
+														<% } else { %>
+														<li>
+															<button disabled class="reject">
+																<img src="/assets/images/icon/rejected-icon.svg" alt="">
+																Rejected
+															</button>
+														</li>
+														<% } %>
 													</ul>
 												</div>
 											</td>
 										</tr>
+										<% } %>
+										<% } %>
 									</tbody>
 								</table>
 							</div>
@@ -204,7 +233,6 @@
 		</div>
 	</div>
 </div>
-<% } %>
 <% } %>
 
 <script src="/assets/js/email-decode.min.js"></script>

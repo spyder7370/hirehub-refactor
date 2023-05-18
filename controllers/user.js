@@ -3,7 +3,6 @@ const User = require('../models/user');
 module.exports.userGet = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.id).populate('appliedJobs');
-		console.log(user);
 		res.render('users/show', { user, page: 'Profile' });
 	} catch (error) {
 		req.flash('error', 'Something went wrong in the database');

@@ -132,42 +132,25 @@
 									</div>
 								</div>
 								<div class="notifacion-card dropdown-menu" aria-labelledby="dropdownMenuButton2">
-									<!-- <h6 class="title">Notifications</h6>
+									<h6 class="title">Notifications</h6>
 									<ul>
+										<% for(let notif of recentNotifs) { %>
 										<li>
 											<div class="icon">
-												<img src="/assets/images/bg/company-logo/notifacion-1.png" alt="">
+												<img src="/images/notif-show.png" alt="">
 											</div>
 											<div class="content">
-												<h6><a href="#">Your application has accepted in 5 vacancies.</a></h6>
-												<span><img src="/assets/images/icon/clock-1.svg" alt=""> 10 min
-													ago</span>
+												<h6><a><%= notif.description.slice(0, 20) %></a></h6>
+												<span><img src="/assets/images/icon/clock-1.svg" alt="">
+													<%= moment(notif.createdAt).fromNow() %>
+												</span>
 											</div>
 										</li>
-										<li>
-											<div class="icon">
-												<img src="/assets/images/bg/company-logo/notifacion-2.png" alt="">
-											</div>
-											<div class="content">
-												<h6><a href="#">Your application has accepted in 5 vacancies.</a></h6>
-												<span><img src="/assets/images/icon/clock-1.svg" alt=""> 10 min
-													ago</span>
-											</div>
-										</li>
-										<li>
-											<div class="icon">
-												<img src="/assets/images/bg/company-logo/notifacion-3.png" alt="">
-											</div>
-											<div class="content">
-												<h6><a href="#">Your application has accepted in 5 vacancies.</a></h6>
-												<span><img src="/assets/images/icon/clock-1.svg" alt=""> 10 min
-													ago</span>
-											</div>
-										</li>
+										<% } %>
 									</ul>
 									<div class="view-all">
-										<a href="#">See All Notifications</a>
-									</div> -->
+										<a href="/notifications">See All Notifications</a>
+									</div>
 								</div>
 							</div>
 						</li>
@@ -284,3 +267,24 @@
 			</div>
 		</div>
 	</header>
+	<% if((error && error.length > 0) || (success && success.length > 0)){ %>
+	<div class="flash-show-page">
+		<div class="container flash-container p-3">
+
+			<% if(error && error.length > 0){ %>
+			<div class="flash-alert mt-0 mb-0 alert alert-danger alert-dismissible fade show" role="alert">
+				<%= error %>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+			<% } %>
+
+			<% if(success && success.length > 0){ %>
+			<div class="falsh-alert mt-0 mb-0 alert alert-success alert-dismissible fade show" role="alert">
+				<%= success %>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+			<% } %>
+
+		</div>
+	</div>
+	<% } %>

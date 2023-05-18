@@ -27,13 +27,9 @@ v8.1.0
   - [Installation](#installation)
   - [Usage](#usage)
     - [Serving the app](#serving-the-app)
-    - [Running the tests](#running-the-tests)
-    - [Building a distribution version](#building-a-distribution-version)
-    - [Serving the distribution version](#serving-the-distribution-version)
   - [Credits](#credits)
   - [Built With](#built-with)
   - [Authors](#authors)
-  - [License](#license)
 
 ## Getting Started
 
@@ -88,8 +84,3 @@ TODO: Write credits
 
 ## Authors
 - **Hitesh** - _Frontend & Backend_ - [Hitesh](https://github.com/spyder7370)
-
-## License
-
-4. testing
-5. questions and test

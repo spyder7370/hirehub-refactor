@@ -110,63 +110,37 @@ module.exports.destroyJob = async (req, res) => {
 	}
 };
 
-module.exports.applyForJob = function(req, res) {
-	User.findById(req.params.userID, function(err, student) {
-		if (err) {
-			req.flash('error', 'Something went wrong in database');
-			console.log(err);
-			res.redirect('/jobs/' + req.params.id);
-		} else {
-			//console.log("a user was found " + student);
-			Job.findById(req.params.id, function(err, foundJob) {
-				if (err) {
-					req.flash('error', 'Something went wrong in jobs database');
-					console.log(err);
-					res.redirect('/jobs/' + req.params.id);
-				} else {
-					var flag = 0;
-					//eval(require("locus"));
-					if (req.user.cgpa < foundJob.eligibility) {
-						flag = 2;
-					}
-					foundJob.students.forEach(function(registeredStudent) {
-						//eval(require("locus"));
-						//console.log("this is a registered student" + registeredStudent);
-						if (registeredStudent._id.equals(student._id)) {
-							//eval(require("locus"));
-							//res.send("you can only apply once");
-							flag = 1;
-						}
-					});
-					//console.log("a job was found " + foundJob);
-					if (flag === 0) {
-						foundJob.students.push({ id: student._id });
-						var size = foundJob.students.length;
-						foundJob.students[size - 1].name = student.name;
-						foundJob.save();
-						student.appliedJobs.push(foundJob);
-						student.save();
-						req.flash('success', 'Successfully applied!!');
-						res.redirect('/jobs/' + req.params.id);
-					} else if (flag === 1) {
-						req.flash('error', 'You can only apply once!');
-						return res.redirect('back');
-						// return res.status(400).json({
-						// 	status: 'error',
-						// 	error: 'you can only apply once',
-						// });
-					} else if (flag === 2) {
-						req.flash('error', 'Required criteria not met!');
-						return res.redirect('back');
-						// return res.status(400).json({
-						// 	status: 'error',
-						// 	error: 'required criteria not met',
-						// });
-					}
-				}
-			});
+module.exports.applyForJob = async (req, res) => {
+	try {
+		const student = await User.findById(req.params.userID),
+			job = await Job.findById(req.params.id);
+		if (req.user.cgpa < job.eligibility) {
+			req.flash('error', 'Required criteria not met!');
+			return res.redirect('back');
 		}
-	});
+		console.log(student);
+		const registrationExists = await Job.find({
+			_id: req.params.id,
+			'students.id': student._id
+		});
+		if (registrationExists.length > 0) {
+			req.flash('error', 'You can only apply once!');
+			return res.redirect('back');
+		}
+		job.students.push({
+			id: student._id,
+			name: student.firstName + student.lastName
+		});
+		await job.save();
+		student.appliedJobs.push(job);
+		await student.save();
+		req.flash('success', 'Successfully applied!!');
+		res.redirect(`/jobs/${req.params.id}`);
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}`);
+	}
 };
 
 module.exports.jobSetStatus = async (req, res) => {

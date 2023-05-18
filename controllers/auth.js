@@ -11,6 +11,7 @@ exports.registerUser = async (req, res) => {
 		if (err) {
 			console.log('error while registering user');
 		}
+		req.flash('Welcome To HireHub!!');
 		res.redirect('/');
 	});
 };
@@ -20,10 +21,12 @@ exports.showLoginForm = (req, res) => {
 };
 
 exports.loginUser = (req, res) => {
+	req.flash('success', 'Welcome Back!!');
 	res.redirect('/');
 };
 
 exports.logoutUser = (req, res) => {
 	req.logout();
+	req.flash('success', 'Successfully logged you out!!');
 	res.redirect('/');
 };

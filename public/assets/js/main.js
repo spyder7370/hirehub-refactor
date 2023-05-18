@@ -1,5 +1,10 @@
 (function($) {
 	'use strict';
+	setTimeout(() => {
+		$('.flash-alert').slideUp();
+		$('.flash-container').slideUp();
+		$('.flash-show-page').slideUp();
+	}, 3000);
 	$('.odometer').counterUp({ delay: 10, time: 1000 });
 	jQuery('.dropdown-icon').on('click', function() {
 		jQuery(this).toggleClass('active').next('ul').slideToggle();

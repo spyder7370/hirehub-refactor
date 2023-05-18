@@ -22,6 +22,7 @@ module.exports.notificationsCreate = async (req, res) => {
 			author: req.body.author
 		});
 		await newNotification.save();
+		req.flash('success', 'Successfully posted notification');
 		res.redirect('/notifications');
 	} catch (error) {
 		req.flash('error', 'Something went wrong in the database');
@@ -33,6 +34,7 @@ module.exports.notificationsCreate = async (req, res) => {
 module.exports.notificationsDelete = async (req, res) => {
 	try {
 		await Notification.findByIdAndDelete(req.params.id);
+		req.flash('success', 'Successfully deleted notification');
 		res.redirect('/notifications');
 	} catch (error) {
 		req.flash('error', 'Something went wrong in the database');

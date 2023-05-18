@@ -135,7 +135,7 @@
                                                 </div>
                                                 <div class="company-details">
                                                     <div class="top">
-                                                        <h6><a href="job-details.html"><%= job.jobName %></a>
+                                                        <h6><a href="/jobs/<%= job._id %>"><%= job.jobName %></a>
                                                         </h6>
                                                         <span><img src="/assets/images/icon/calender2.svg" alt="">
                                                             <%= moment(job.createdAt).fromNow() %></span>

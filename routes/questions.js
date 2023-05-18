@@ -9,197 +9,178 @@ var Job = require('../models/job'),
 	User = require('../models/user');
 
 //QUESTION NEW FORM ROUTE
-router.get('/job/:id/questions/new', isAdmin, function(req, res) {
-	Job.findById(req.params.id, function(err, job) {
-		if (err) {
-			req.flash('error', 'Something went wrong in the database');
-			console.log(err);
-			res.redirect('/jobs/' + req.params.id + '/questions');
-		} else {
-			res.render('questions/new', { job, page: 'Job Questions' });
-		}
-	});
+router.get('/jobs/:id/questions/new', isAdmin, async (req, res) => {
+	try {
+		const job = await Job.findById(req.params.id);
+		res.render('questions/new', { job, page: 'Job Questions' });
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 //QUESTION CREATE ROUTE
-router.post('/job/:id/questions', isAdmin, function(req, res) {
-	Question.create(req.body.question, function(err, newQues) {
-		if (err) {
-			req.flash('error', 'Something went wrong in the database');
-			console.log(err);
-			res.redirect('/jobs/' + req.params.id + '/questions');
-		} else {
-			//push  to job
-			Job.findById(req.params.id, function(err, foundJob) {
-				foundJob.questions.push(newQues);
-				foundJob.save();
-				req.flash('success', 'Successfully added question');
-				res.redirect('/job/' + req.params.id + '/questions');
-			});
-		}
-	});
+router.post('/jobs/:id/questions', isAdmin, async (req, res) => {
+	try {
+		const question = new Question(req.body.question),
+			job = await Job.findById(req.params.id);
+		await question.save();
+		job.questions.push(question);
+		await job.save();
+		req.flash('success', 'Successfully added question');
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 //QUESTION SHOW ROUTE
-router.get('/job/:id/questions', isAdmin, function(req, res) {
-	Job.findById(req.params.id).populate('questions').exec(function(err, foundJob) {
-		if (err) {
-			req.flash('error', 'Something went wrong in the database');
-			console.log(err);
-			res.redirect('/jobs/' + req.params.id + '/questions');
-		} else {
-			res.render('questions/show', { job: foundJob, page: 'Question' });
-		}
-	});
+router.get('/jobs/:id/questions', isAdmin, async (req, res) => {
+	try {
+		const job = await Job.findById(req.params.id).populate('questions');
+		res.render('questions/show', { job, page: 'Question' });
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 //QUESTION EDIT FORM ROUTE
-router.get('/job/:id/questions/:questionId/edit', isAdmin, function(req, res) {
-	Question.findById(req.params.questionId, function(err, foundQues) {
-		if (err) {
-			req.flash('error', 'Something went wrong in the database');
-			console.log(err);
-			res.redirect('/jobs/' + req.params.id + '/questions');
-		} else {
-			res.render('questions/edit', { jobId: req.params.id, question: foundQues, page: 'Edit Question' });
-		}
-	});
+router.get('/jobs/:id/questions/:questionId/edit', isAdmin, async (req, res) => {
+	try {
+		const question = await Question.findById(req.params.questionId);
+		res.render('questions/edit', { jobId: req.params.id, question, page: 'Edit Question' });
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 // QUESTION UPDATE ROUTE
-router.put('/job/:id/questions/:questionId', isAdmin, function(req, res) {
-	Question.findByIdAndUpdate(req.params.questionId, req.body.question, function(err, updatedQues) {
-		if (err) {
-			req.flash('error', 'Something went wrong in the database');
-			console.log(err);
-			res.redirect('/jobs/' + req.params.id + '/questions');
-		} else {
-			req.flash('success', 'Successfully updated question');
-			res.redirect('/job/' + req.params.id + '/questions');
-		}
-	});
+router.put('/jobs/:id/questions/:questionId', isAdmin, async (req, res) => {
+	try {
+		await Question.findByIdAndUpdate(req.params.questionId, req.body.question);
+		req.flash('success', 'Successfully updated question');
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 //QUESTION DELETE ROUTE
-router.delete('/job/:id/questions/:questionId', isAdmin, function(req, res) {
-	Question.findByIdAndRemove(req.params.questionId, function(err) {
-		if (err) {
-			req.flash('error', 'Something went wrong in the database');
-			console.log(err);
-			res.redirect('/jobs/' + req.params.id + '/questions');
-		} else {
-			req.flash('success', 'Successfully deleted question');
-			res.redirect('/job/' + req.params.id + '/questions');
-		}
-	});
+router.delete('/jobs/:id/questions/:questionId', isAdmin, async (req, res) => {
+	try {
+		await Question.findByIdAndRemove(req.params.questionId);
+		req.flash('success', 'Successfully deleted question');
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 //TEST FORM ROUTE
-router.get('/job/:id/test/:userId', isAuth, function(req, res) {
-	if (req.user.selected == true) {
-		req.flash('error', 'You are already selected for another job');
-		return res.redirect('back');
-		// return res.status(400).json({
-		// 	status: 'error',
-		// 	error: 'you are already selected for another job',
-		// });
-	}
-
-	Job.findById(req.params.id).populate('questions').exec(function(err, foundJob) {
-		if (err) {
-			console.log(err);
-		} else {
-			foundJob.students.forEach(function(student) {
-				if (student._id.equals(req.user._id)) {
-					if (student.shortlisted) {
-						req.flash('error', 'You are already shortlisted for this job!');
-						return res.redirect('back');
-						// return res.status(400).json({
-						// 	status: 'error',
-						// 	error: 'you are already shortlisted for this job',
-						// });
-					} else if (student.rejected) {
-						req.flash('error', 'Sorry but you have been rejected for this job');
-						return res.redirect('back');
-						// return res.status(400).json({
-						// 	status: 'error',
-						// 	error: 'Sorry but you have been rejected for this job',
-						// });
-					}
-				}
-			});
-			User.findById(req.params.userId, function(err, user) {
-				if (err) {
-					console.log(err);
-				} else {
-					res.render('test-info', { user: user, job: foundJob, page: 'Test Info' });
-				}
-			});
+router.get('/jobs/:id/test/:userId', isAuth, async (req, res) => {
+	try {
+		if (req.user.selected == true) {
+			req.flash('error', 'You are already selected for another job');
+			return res.redirect('back');
 		}
-	});
+		const job = await Job.findById(req.params.id).populate('questions');
+		const user = await User.findById(req.params.userId);
+		const registrationExists = await Job.findOne({
+			_id: req.params.id,
+			'students.id': user._id
+		});
+		if (!registrationExists) {
+			req.flash('error', `You have to apply first!`);
+			return res.redirect('back');
+		}
+		const shortlistExists = await Job.findOne({
+			_id: req.params.id,
+			'students.id': user._id,
+			'students.shortlisted': true
+		});
+		if (shortlistExists) {
+			req.flash('error', `You have already been shortlisted for this job!`);
+			return res.redirect('back');
+		}
+		const rejectionExists = await Job.findOne({
+			_id: req.params.id,
+			'students.id': user._id,
+			'students.rejected': true
+		});
+		if (rejectionExists) {
+			req.flash('error', `You have already been rejected for this job!`);
+			return res.redirect('back');
+		}
+		res.render('test-info', { user, job, page: 'Test Info' });
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
-router.get('/job/:id/test/:userId/form', isAuth, function(req, res) {
-	Job.findById(req.params.id).populate('questions').exec(function(err, foundJob) {
-		if (err) {
-			console.log(err);
-		} else {
-			User.findById(req.params.userId, function(err, user) {
-				if (err) {
-					console.log(err);
-				} else {
-					res.render('test', { user: user, job: foundJob, page: 'Test' });
-				}
-			});
-		}
-	});
+router.get('/jobs/:id/test/:userId/form', isAuth, async (req, res) => {
+	try {
+		const job = await Job.findById(req.params.id).populate('questions'),
+			user = await User.findById(req.params.userId);
+		res.render('test', { user, job, page: 'Test' });
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 //TEST FORM LOGIC
-router.post('/job/:id/test/:userId', isAuth, function(req, res) {
-	// eval(require("locus"));
-	//req.body.option
-	if (req.user.selected == true) {
-		req.flash('error', 'You can only apply once!');
-		return res.redirect('back');
-		// return res.status(400).json({
-		// 	status: 'error',
-		// 	error: 'you can only apply once',
-		// });
-	}
-	Job.findById(req.params.id).populate('questions').exec(function(err, foundJob) {
-		if (err) {
-			console.log(err);
-		} else {
-			let marks = 0;
-			let total = foundJob.questions.length * 0.75;
-			for (let i = 0; i < foundJob.questions.length; i++) {
-				if (foundJob.questions[i].correctAns == req.body.option[i]) {
-					marks++;
-				}
-			}
-			//eval(require("locus"));
-			if (marks >= total) {
-				foundJob.students.forEach(function(student) {
-					if (student._id.equals(req.user._id)) {
-						student.shortlisted = true;
-						foundJob.save();
-						req.flash('success', 'Successfully submitted test');
-						res.redirect('/jobs/' + req.params.id);
-					}
-				});
-			} else {
-				foundJob.students.forEach(function(student) {
-					if (student._id.equals(req.user._id)) {
-						student.rejected = true;
-						foundJob.save();
-						req.flash('success', 'Successfully submitted test');
-						res.redirect('/jobs/' + req.params.id);
-					}
-				});
+router.post('/jobs/:id/test/:userId', isAuth, async (req, res) => {
+	try {
+		if (req.user.selected == true) {
+			req.flash('error', 'You can only apply once!');
+			return res.redirect('back');
+		}
+		const foundJob = await Job.findById(req.params.id).populate('questions');
+		let marks = 0,
+			total = foundJob.questions.length * 0.75;
+		for (let i = 0; i < foundJob.questions.length; i++) {
+			if (foundJob.questions[i].correctAns == req.body.option[i]) {
+				marks++;
 			}
 		}
-	});
+		if (marks >= total) {
+			foundJob.students.forEach(async (student) => {
+				if (student.id.equals(req.user._id)) {
+					student.shortlisted = true;
+					await foundJob.save();
+					req.flash('success', 'Successfully submitted test');
+					return res.redirect(`/jobs/${req.params.id}`);
+				}
+			});
+		} else {
+			foundJob.students.forEach(async (student) => {
+				if (student.id.equals(req.user._id)) {
+					student.rejected = true;
+					await foundJob.save();
+					req.flash('success', 'Successfully submitted test');
+					return res.redirect(`/jobs/${req.params.id}`);
+				}
+			});
+		}
+	} catch (error) {
+		req.flash('error', 'Something went wrong in the database');
+		console.log(error);
+		res.redirect(`/jobs/${req.params.id}/questions`);
+	}
 });
 
 module.exports = router;

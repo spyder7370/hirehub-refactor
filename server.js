@@ -39,7 +39,8 @@ app.use(
 );
 
 //REQUIRING MODELS
-const User = require('./models/user');
+const Notif = require('./models/notification'),
+	User = require('./models/user');
 //PASSPORT CONFIGURATION
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,11 +54,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.use(methodOverride('_method'));
 app.use(flash());
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
 	res.locals.currentUser = req.user;
 	res.locals.error = req.flash('error');
 	res.locals.success = req.flash('success');
 	res.locals.moment = moment;
+	res.locals.recentNotifs = await Notif.find().sort({ _id: -1 }).limit(4);
 	next();
 });
 

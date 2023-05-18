@@ -55,6 +55,7 @@ module.exports.updateResume = async (req, res) => {
 			res.redirect(`/users/${id}/resume/edit`);
 		} else {
 			await Resume.findByIdAndUpdate(user.resume, req.body.resume);
+			req.flash('success', 'Changes saved!!');
 			res.redirect(`/users/${id}/resume/edit`);
 		}
 	} catch (error) {

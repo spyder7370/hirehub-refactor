@@ -1,0 +1,169 @@
+<%- include('../partials/header'); -%>
+<div class="inner-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="banner-content text-center">
+                    <h1>Edit Job <%= job.jobName %> - <%= job.companyName %></h1>
+                    <span></span>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit a job</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="job-post-area pt-120 mb-120">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-wrapper">
+                    <form action="/jobs/<%= job._id %>?_method=PUT" method="post">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="section-title2">
+                                    <h5>Job Information:</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label for="jobtitle">Job Title*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/company-2.svg" alt="">
+                                        <input type="text" id="jobtitle" name="job[jobName]"
+                                            placeholder="Senior UI/UX Engineer" value="<%= job['jobName'] %>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label>Job Category*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/category-2.svg" alt="">
+                                        <select name="job[category]" class="select1" required>
+                                            <option value="Software Engineer">Software Engineer</option>
+                                            <option value="Data Analyst">Data Analyst</option>
+                                            <option value="UI/UX">UI/UX</option>
+                                            <option value="Human Resources">Human Resources</option>
+                                            <option value="Program Manager">Program Manager</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label for="companyname">Company Name*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/company-2.svg" alt="">
+                                        <input type="text" id="companyname" name="job[companyName]" placeholder="Google"
+                                            value="<%= job['companyName'] %>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label for="query">Query Email*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/email-2.svg" alt="">
+                                        <input type="email" id="query" name="job[query]"
+                                            placeholder="query.google@gmail.com" value="<%= job['query'] %>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label for="eligibility">CGPA Eligibility*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/user-2.svg" alt="">
+                                        <input type="text" id="eligibility" name="job[eligibility]" placeholder="10"
+                                            value="<%= job['eligibility'] %>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label for="salary">CTC*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/salary-2.svg" alt="">
+                                        <input id="salary" type="text" name="job[stipend]" placeholder="25,00,000"
+                                            value="<%= job['stipend'] %>" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label>Job Type*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/company-2.svg" alt="">
+                                        <select name="job[type]" class="select1" required>
+                                            <option value="Full Time">Full Time</option>
+                                            <option value="Part Time">Part Time</option>
+                                            <option value="Temporary">Temporary</option>
+                                            <option value="Seasonal">Seasonal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label>Experience Level*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/email-2.svg" alt="">
+                                        <select name="job[experience]" class="select1" required>
+                                            <option value="Entry Level">Entry Level</option>
+                                            <option value="Mid Level">Mid Level</option>
+                                            <option value="Mid-Senior Level">Mid-Senior Level</option>
+                                            <option value="Top Level">Top Level</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label>Job Location*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/search-2.svg" alt="">
+                                        <input id="location" type="text" name="job[location]"
+                                            placeholder="Hyderabad, India" value="<%= job['location'] %>" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-inner mb-25">
+                                    <label for="datepicker9">Deadline*</label>
+                                    <div class="input-area">
+                                        <img src="/assets/images/icon/calender2.svg" alt="">
+                                        <input type="text" id="datepicker9" name="job[deadline]" placeholder="MM/DD/YY"
+                                            value="<%= job['deadline'] %>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-inner mb-30">
+                                    <label for="summernote1">Job Description*</label>
+                                    <textarea name="job[description]" id="summernote1"
+                                        placeholder="Something Write Yourself...."
+                                        required><%= job['description'] %></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-inner">
+                                    <button class="primry-btn-2 lg-btn w-unset" type="submit">Edit Job</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/js/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+</script>
+<%- include('../partials/footerBox'); -%>
+<%- include('../partials/footer'); -%>

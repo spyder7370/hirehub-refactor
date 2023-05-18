@@ -1,0 +1,212 @@
+<%- include('../partials/header'); -%>
+<div class="inner-banner">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="banner-content text-center">
+					<h1>Job Details</h1>
+					<span></span>
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Job Details</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="job-details-pages pt-120">
+	<div class="container">
+		<div class="row g-lg-4 gy-5">
+			<div class="col-lg-8">
+				<div class="job-details-content">
+					<div class="job-list-content">
+						<div class="company-area">
+							<div class="logo">
+								<img src="<%= job.logo %>" alt="">
+							</div>
+							<div class="company-details">
+								<div class="name-location">
+									<h5><a href="#"><%= job.jobName %></a></h5>
+									<p><%= job.companyName %></p>
+								</div>
+							</div>
+						</div>
+						<div class="job-discription">
+							<ul class="one">
+								<li>
+									<img src="/assets/images/icon/map-2.svg" alt="">
+									<p><span class="title">Location:</span> <%= job.location %></p>
+								</li>
+								<li>
+									<img src="/assets/images/icon/category-2.svg" alt="">
+									<p><span class="title">Category:</span> <%= job.category %></p>
+								</li>
+							</ul>
+							<ul>
+								<li>
+									<img src="/assets/images/icon/company-2.svg" alt="">
+									<p><span class="title">Job Type:</span> <%= job.type %></p>
+								</li>
+								<li>
+									<img src="/assets/images/icon/salary-2.svg" alt="">
+									<p><span class="title">CTC:</span> Rs. <%= job.stipend %></p>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<p><span>Job Description:</span>
+						<div><%- job.description %></div>
+					</p>
+					<br>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="job-details-sidebar mb-120">
+					<div
+						class="save-apply-btn d-flex justify-content-end <%= currentUser && currentUser.isAdmin ? 'mb-2' : 'mb-50' %>">
+						<ul>
+							<% if (currentUser && currentUser.isAdmin) { %>
+							<li><a class="primry-btn-2 lg-btn" href="/jobs/<%=job._id%>/questions">Test Panel</a></li>
+							<li><a class="primry-btn-2 lg-btn" href="/jobs/<%= job._id %>/edit">Edit</a></li>
+							<form action="/jobs/<%=job._id%>?_method=DELETE" method="POST">
+								<button class="primry-btn-2 lg-btn">Delete</button>
+							</form>
+							<% } else if(currentUser && job.status === 'Active') { %>
+							<li>
+								<a class="primry-btn-2 lg-btn" href="/jobs/<%=job._id%>/test/<%=currentUser._id%>">
+									Give Test
+								</a>
+							</li>
+							<li>
+								<a class="primry-btn-2 lg-btn" href="/jobs/<%=job._id%>/apply/<%=currentUser._id%>">
+									Apply Position
+								</a>
+							</li>
+							<% } %>
+						</ul>
+
+					</div>
+					<% if (currentUser && currentUser.isAdmin) { %>
+					<div class="save-apply-btn d-flex justify-content-end mb-50">
+						<ul>
+							<li><a style="background-color: #14A54C;" class="primry-btn-2 lg-btn"
+									href="/jobs/<%=job._id%>/status?status=Active">Active</a>
+							</li>
+							<li><a style="background-color: #E4A11B;" class="primry-btn-2 lg-btn"
+									href="/jobs/<%= job._id %>/status?status=Interview">Interview</a>
+							</li>
+							<li><a style="background-color: #DC4D65;" class="primry-btn-2 lg-btn"
+									href="/jobs/<%=job._id%>/status?status=Over">Over</a>
+							</li>
+						</ul>
+					</div>
+					<% } %>
+					<div class=" job-summary-area mb-50">
+						<div class="job-summary-title">
+							<h6>Job Summary:</h6>
+						</div>
+						<ul>
+							<li>
+								<p><span class="title">Status:</span> <%= job.status %></p>
+							</li>
+							<li>
+								<p><span class="title">Experience:</span> <%= job.experience %></p>
+							</li>
+							<li>
+								<p><span class="title">Job Posted:</span>
+									<%= job.createdAt.toDateString() %>.</p>
+							</li>
+							<li>
+								<p><span class="title">Expiration:</span>
+									<%= job.deadline.toDateString() %>.</p>
+							</li>
+							<li>
+								<p><span class="title">CGPA Eligibility:</span> <%= job.eligibility %>.</p>
+							</li>
+							<li>
+								<p><span class="title">Education:</span> Bachelor Degree.</p>
+							</li>
+						</ul>
+					</div>
+					<div class="email-area mb-50">
+						<div class="title">
+							<h6><img src="/assets/images/icon/email-2.svg" alt="">Email</h6>
+						</div>
+						<p>Send your resume at <a><span><%= job.query %></span></a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<% if (job.students) { %>
+<% for( let student of job.students ) { %>
+<div class="company-job-detaiils-page mb-120">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="applied-list-wrap">
+					<div class="row g-lg-4 gy-5">
+						<div class="col-xl-12 col-lg-12">
+							<div class="table-wrapper2">
+								<table class="eg-table table category-table mb-0">
+									<thead>
+										<tr>
+											<th>Candidate Name</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td data-label="Candidate Name">
+												<div class="employee-info">
+													<div class="employee-img">
+														<img src="<%= student.id.avatar %>" alt="">
+													</div>
+													<div class="employee-content">
+														<button type="button" class="btn btn-primary"
+															data-bs-toggle="modal" data-bs-target="#exampleModal">
+															<a href="/users/<%= student.id._id %>"><%= student.id.firstName %>
+																<%= student.id.lastName %></a>
+														</button>
+														<span><img src="/assets/images/icon/company-2.svg"
+																alt=""><%= student.id.university %></span>
+														<p><span><%= student.id.branch %>, </span><%= student.id.cgpa %>
+															CGPA
+														</p>
+													</div>
+												</div>
+											</td>
+											<td data-label="Actions">
+												<div class="action-btn-group d-flex justify-content-start">
+													<ul>
+														<li><button><img src="/assets/images/icon/shortlist-icon.svg"
+																	alt=""> Shortlist</button></li>
+														<li><button class="reject"><img
+																	src="/assets/images/icon/rejected-icon.svg" alt="">
+																Reject</button></li>
+													</ul>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% } %>
+<% } %>
+
+<script src="/assets/js/email-decode.min.js"></script>
+<%- include('../partials/footerBox'); -%>
+<%- include('../partials/footer'); -%>
